@@ -21,39 +21,28 @@ class AftersearchViewController: UIViewController {
     @IBOutlet weak var FrksLbl: UILabel!
     @IBOutlet weak var IsssLbl: UILabel!
     
-    var vc1: RootViewController!
-        
+    var rootVc:  RootViewController!
+    let langLbl: String = "Written in "
+    let strsLbl: String = " stars"
+    let wchLbl:  String = " watchers"
+    let frksLbl: String = " forks"
+    let isssLbl: String = " open issues"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let repo = vc1.repo[vc1.idx]
+        let repo = rootVc.repo[rootVc.idx]
         
-        LangLbl.text = "Written in \(repo["language"] as? String ?? "")"
-        StrsLbl.text = "\(repo["stargazers_count"] as? Int ?? 0) stars"
-        WchsLbl.text = "\(repo["wachers_count"] as? Int ?? 0) watchers"
-        FrksLbl.text = "\(repo["forks_count"] as? Int ?? 0) forks"
-        IsssLbl.text = "\(repo["open_issues_count"] as? Int ?? 0) open issues"
-        getImage()
+        LangLbl.text = langLbl + (repo[RepoDataKey.REPO_LANG] as? String ?? "")
+        StrsLbl.text = String(repo[RepoDataKey.REPO_STAR_CNT] as? Int ?? 0) + strsLbl
+        WchsLbl.text = String(repo[RepoDataKey.REPO_WACH_CNT] as? Int ?? 0) + wchLbl
+        FrksLbl.text = String(repo[RepoDataKey.REPO_FORK_CNT] as? Int ?? 0) + frksLbl
+        IsssLbl.text = String(repo[RepoDataKey.REPO_OPEN_ISSS] as? Int ?? 0) + isssLbl
         
+        TtlLbl.text = repo[RepoDataKey.REPO_FULL_NAME] as? String
+        
+        let getImageModels: GetImageModel = GetImageModel()
+        getImageModels.getImage(repo, self)
     }
-    
-    func getImage(){
         
-        let repo = vc1.repo[vc1.idx]
-        
-        TtlLbl.text = repo["full_name"] as? String
-        
-        if let owner = repo["owner"] as? [String: Any] {
-            if let imgURL = owner["avatar_url"] as? String {
-                URLSession.shared.dataTask(with: URL(string: imgURL)!) { (data, res, err) in
-                    let img = UIImage(data: data!)!
-                    DispatchQueue.main.async {
-                        self.ImgView.image = img
-                    }
-                }.resume()
-            }
-        }
-        
-    }
-    
 }
